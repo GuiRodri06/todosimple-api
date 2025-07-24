@@ -9,36 +9,46 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-@Service
+@Service // Indica que essa classe é um "Service" do Spring, ou seja, uma classe de serviço que contém regras de negócio
 public class UserService {
 
-    @Autowired
+    @Autowired // Injeta automaticamente a dependência do repositório de usuários
     private UserRepositoy userRepositoy;
 
-    @Autowired
+    @Autowired // Injeta automaticamente a dependência do repositório de tarefas
     private TaskRepository taskRepository;
 
+    // Método para buscar um usuário pelo seu ID
     public User findById(Long id) {
         Optional<User> user = this.userRepositoy.findById(id);
+        // Se o usuário estiver presente, retorna; se não, lança uma exceção personalizada
         return user.orElseThrow(() -> new RuntimeException(
                 "Usuário não encontrado! Id: " + id + ", Tipo: " + User.class.getName()));
     }
 
-    @Transactional // se utiliza quando vai salvar algo no banco de dados
+    @Transactional // Garante que todas as operações dentro do método sejam executadas em uma única transação
     public User create(User obj) {
+        // Garante que o ID esteja nulo para o JPA entender que é um novo objeto
         obj.setId(null);
+        // Salva o novo usuário no banco de dados
         obj = this.userRepositoy.save(obj);
+        // Salva todas as tarefas associadas a esse usuário (relacionamento 1:N, por exemplo)
         this.taskRepository.saveAll(obj.getTasks());
+        // Retorna o usuário salvo com ID e tarefas persistidas
         return obj;
     }
 
-    @Transactional
+    @Transactional // Também utiliza transação, já que está alterando dados no banco
     public User update(User obj) {
+        // Busca o usuário existente pelo ID para garantir que ele existe
         User newObj = findById(obj.getId());
+        // Atualiza apenas a senha do usuário. Você pode adicionar mais campos se quiser permitir atualizações completas.
         newObj.setPassword(obj.getPassword());
+        // Salva e retorna o usuário atualizado
         return this.userRepositoy.save(newObj);
     }
 
+    // Método para deletar um usuário pelo ID
     public void delete(Long id) {
         findById(id);
         try {
@@ -47,6 +57,4 @@ public class UserService {
             throw new RuntimeException("Não é possível excluir pois há entidades relacionadas");
         }
     }
-
-
 }

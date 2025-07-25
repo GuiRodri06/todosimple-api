@@ -1,7 +1,6 @@
 package com.lucasangelo.todosimple.service;
 
 import com.lucasangelo.todosimple.models.User;
-import com.lucasangelo.todosimple.repositories.TaskRepository;
 import com.lucasangelo.todosimple.repositories.UserRepositoy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,6 @@ public class UserService {
 
     @Autowired // Injeta automaticamente a dependência do repositório de usuários
     private UserRepositoy userRepositoy;
-
-    @Autowired // Injeta automaticamente a dependência do repositório de tarefas
-    private TaskRepository taskRepository;
 
     // Método para buscar um usuário pelo seu ID
     public User findById(Long id) {
@@ -32,8 +28,6 @@ public class UserService {
         obj.setId(null);
         // Salva o novo usuário no banco de dados
         obj = this.userRepositoy.save(obj);
-        // Salva todas as tarefas associadas a esse usuário (relacionamento 1:N, por exemplo)
-        this.taskRepository.saveAll(obj.getTasks());
         // Retorna o usuário salvo com ID e tarefas persistidas
         return obj;
     }

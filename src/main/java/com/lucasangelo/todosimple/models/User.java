@@ -29,7 +29,7 @@ public class User {
     @NotNull(groups = CreatUser.class)
     @NotEmpty(groups = CreatUser.class)
     @Size(groups = CreatUser.class, min = 2, max = 100)
-    private String userName;
+    private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", length = 60, nullable = false)
@@ -46,7 +46,7 @@ public class User {
 
     public User(Long id, String userName, String password) {
         this.id = id;
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
     }
 
@@ -58,12 +58,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -101,7 +101,7 @@ public class User {
             else if (!this.id.equals(other.id))
                 return false;
 
-        return Objects.equals(this.id, other.id) && Objects.equals(this.userName, other.userName)
+        return Objects.equals(this.id, other.id) && Objects.equals(this.username, other.username)
                 && Objects.equals(this.password, other.password);
     }
 

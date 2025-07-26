@@ -34,7 +34,7 @@ public class TaskController {
     public ResponseEntity<List<Task>> findAllByUserId(@PathVariable Long userId) {
         // @PathVariable: extrai o valor do parâmetro 'userId' diretamente da URL
 
-        userService.findById(userId);
+        this.userService.findById(userId);
 
         List<Task> objs = this.taskService.findAllByUserID(userId);
         // Chama o serviço (taskService) para buscar todas as tarefas relacionadas ao usuário com o ID fornecido

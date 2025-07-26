@@ -2,6 +2,7 @@ package com.lucasangelo.todosimple.controllers;
 
 import com.lucasangelo.todosimple.models.Task;
 import com.lucasangelo.todosimple.service.TaskService;
+import com.lucasangelo.todosimple.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +21,9 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/{id}")
     public ResponseEntity<Task> findById(@PathVariable Long id) {
         Task obj = this.taskService.findById(id);
@@ -29,6 +33,8 @@ public class TaskController {
     @GetMapping("/user/{userId}") // Mapeia requisições GET para o endpoint /task/user/{userId}
     public ResponseEntity<List<Task>> findAllByUserId(@PathVariable Long userId) {
         // @PathVariable: extrai o valor do parâmetro 'userId' diretamente da URL
+
+        userService.findById(userId);
 
         List<Task> objs = this.taskService.findAllByUserID(userId);
         // Chama o serviço (taskService) para buscar todas as tarefas relacionadas ao usuário com o ID fornecido

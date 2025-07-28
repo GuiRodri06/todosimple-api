@@ -1,7 +1,7 @@
 package com.lucasangelo.todosimple.controllers;
 
 import com.lucasangelo.todosimple.models.User;
-import com.lucasangelo.todosimple.service.UserService;
+import com.lucasangelo.todosimple.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

@@ -1,17 +1,24 @@
 package com.lucasangelo.todosimple.services;
 
 import com.lucasangelo.todosimple.models.User;
+import com.lucasangelo.todosimple.models.enums.ProfileEnum;
 import com.lucasangelo.todosimple.repositories.UserRepositoy;
 import com.lucasangelo.todosimple.services.exceptions.DataBindingViolationException;
 import com.lucasangelo.todosimple.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service // Indica que essa classe é um "Service" do Spring, ou seja, uma classe de serviço que contém regras de negócio
 public class UserService {
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired // Injeta automaticamente a dependência do repositório de usuários
     private UserRepositoy userRepositoy;
@@ -28,6 +35,8 @@ public class UserService {
     public User create(User obj) {
         // Garante que o ID esteja nulo para o JPA entender que é um novo objeto
         obj.setId(null);
+        obj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
+        obj.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
         // Salva o novo usuário no banco de dados
         obj = this.userRepositoy.save(obj);
         // Retorna o usuário salvo com ID e tarefas persistidas
@@ -40,6 +49,7 @@ public class UserService {
         User newObj = findById(obj.getId());
         // Atualiza apenas a senha do usuário. Você pode adicionar mais campos se quiser permitir atualizações completas.
         newObj.setPassword(obj.getPassword());
+        newObj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
         // Salva e retorna o usuário atualizado
         return this.userRepositoy.save(newObj);
     }
